@@ -55,23 +55,8 @@ names(df.samsung) <- gsub("..", ".", names(df.samsung), fixed=TRUE)
 # treat subject as a character rather than an integer
 df.samsung$subject <- as.character(df.samsung$subject)
 
-# compute means of variables for the activities
-df.activitymeans <- aggregate(. ~ activity,
-                              data=df.samsung[c(1,
-                                                3:length(names(df.samsung)))],
-                              FUN=mean)
-names(df.activitymeans)[1] <- "mean.for"
-df.activitymeans$mean.for <- as.character(df.activitymeans$mean.for)
-
-# compute means of variables for the subjects
-df.subjmeans <-  aggregate(. ~ subject,
-                           data=df.samsung[2:length(names(df.samsung))],
-                           FUN=mean)
-names(df.subjmeans)[1] <- "mean.for"
-df.subjmeans$mean.for <- paste("Subject ", as.character(df.subjmeans$mean.for))
-
-# stack the means into one data frame
-df.means <- rbind(df.activitymeans, df.subjmeans)
+# compute means of the variables by subject and activity
+df.means <- aggregate(. ~ activity + subject, data=df.samsung, FUN=mean)
 
 # output the means data frame
 write.table(df.means, file="./tidymeans.txt", row.names=FALSE)
